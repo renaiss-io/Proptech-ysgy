@@ -12,7 +12,7 @@ Hackathon individual, ~16–20 hs. Brief completo: `docs/brief_plataforma_inmobi
 
 ## Stack (locked)
 
-- **Framework**: Next.js 14, TypeScript, App Router
+- **Framework**: Next.js 16, TypeScript, App Router
 - **Styles**: Tailwind CSS
 - **DB**: PostgreSQL via Prisma ORM — migrations versioned, no loose SQL scripts
 - **Storage**: Supabase Storage (DNIs, comprobantes de ingresos)
