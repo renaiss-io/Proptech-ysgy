@@ -1,8 +1,6 @@
 import { groq, MODELS } from "./client";
 import fs from "fs";
 import path from "path";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const pdf = require("pdf-parse") as (buffer: Buffer) => Promise<{ text: string }>;
 
 export interface ConfidenceScoreResult {
   score: number;
@@ -24,6 +22,8 @@ interface ProfileData {
 }
 
 async function extractPdfText(filePath: string): Promise<string> {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const pdf = require("pdf-parse") as (buffer: Buffer) => Promise<{ text: string }>;
   const buffer = fs.readFileSync(filePath);
   const data = await pdf(buffer);
   return data.text.slice(0, 3000);

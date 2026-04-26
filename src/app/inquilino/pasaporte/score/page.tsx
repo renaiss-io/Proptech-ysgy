@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { verifySession } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
