@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { authConfig } from "@/auth.config";
@@ -6,6 +7,21 @@ import { authConfig } from "@/auth.config";
 export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
+  providers: [
+    ...authConfig.providers,
+    Credentials({
+      credentials: { email: {}, password: {} },
+      async authorize(credentials) {
+        const devPassword = process.env.DEV_PASSWORD;
+        if (!devPassword || credentials.password !== devPassword) return null;
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email as string },
+          select: { id: true, email: true, name: true, image: true },
+        });
+        return user;
+      },
+    }),
+  ],
   callbacks: {
     ...authConfig.callbacks,
     async jwt({ token, user, trigger, session }) {
