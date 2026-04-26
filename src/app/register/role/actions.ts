@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { auth, unstable_update } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
@@ -12,6 +12,8 @@ export async function setRole(role: "INQUILINO" | "INMOBILIARIA") {
     where: { id: session.user.id },
     data: { role },
   });
+
+  await unstable_update({ user: { role } });
 
   redirect(role === "INQUILINO" ? "/inquilino" : "/inmobiliaria/onboarding");
 }
