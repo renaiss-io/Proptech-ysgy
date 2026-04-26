@@ -40,6 +40,12 @@ export async function postulate(propertyId: string) {
         propertyType: property.propertyType,
         bedrooms: property.bedrooms,
         area: Number(property.area),
+        petsAllowed: property.petsAllowed,
+        smokersAllowed: property.smokersAllowed,
+        childrenAllowed: property.childrenAllowed,
+        minVerazScore: property.minVerazScore,
+        acceptedGuarantees: property.acceptedGuarantees,
+        minIncomeMultiplier: property.minIncomeMultiplier ? Number(property.minIncomeMultiplier) : null,
       }
     );
     compatibilityPct = result.compatibility_pct;

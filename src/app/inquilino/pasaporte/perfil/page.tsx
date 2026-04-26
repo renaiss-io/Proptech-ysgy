@@ -1,6 +1,7 @@
 import { verifySession } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { saveProfile } from "./actions";
+import { PasaporteStepper } from "@/components/PasaporteStepper";
 
 const PROFILE_TYPES = [
   { value: "RELACION_DEPENDENCIA", label: "Relación de dependencia" },
@@ -22,9 +23,10 @@ export default async function PerfilPage() {
 
   return (
     <div className="max-w-xl">
+      <PasaporteStepper current={1} />
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-gray-900">Mi Perfil</h1>
-        <p className="text-gray-500 text-sm mt-1">Paso 1 de 3 — Información personal</p>
+        <h1 className="text-xl font-semibold text-gray-900">Información personal</h1>
+        <p className="text-gray-500 text-sm mt-1">Completá tus datos para armar tu pasaporte de inquilino.</p>
       </div>
 
       <form action={saveProfile} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">

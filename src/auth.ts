@@ -14,7 +14,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.id = user.id;
+      if (user?.id) token.id = user.id;
       // Re-fetch role from DB until it's set (new users have role=null until /register/role)
       if (token.id && token.role === undefined) {
         const dbUser = await prisma.user.findUnique({

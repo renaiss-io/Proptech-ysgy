@@ -23,6 +23,12 @@ interface PropertyData {
   propertyType: string;
   bedrooms: number;
   area: number;
+  petsAllowed?: boolean;
+  smokersAllowed?: boolean;
+  childrenAllowed?: boolean;
+  minVerazScore?: number | null;
+  acceptedGuarantees?: string[];
+  minIncomeMultiplier?: number | null;
 }
 
 export async function computeCompatibility(
@@ -47,6 +53,12 @@ Property:
 - ${property.title} — ${property.neighborhood ?? "Buenos Aires"}
 - Type: ${property.propertyType}, ${property.bedrooms} bedrooms, ${property.area}m²
 - Monthly rent: ARS ${property.price}
+- Pets allowed: ${property.petsAllowed !== false ? "sí" : "no"}
+- Smokers allowed: ${property.smokersAllowed ? "sí" : "no"}
+- Children allowed: ${property.childrenAllowed !== false ? "sí" : "no"}
+- Min Veraz score required: ${property.minVerazScore ?? "none"}
+- Accepted guarantees: ${property.acceptedGuarantees?.length ? property.acceptedGuarantees.join(", ") : "all"}
+- Min income multiplier: ${property.minIncomeMultiplier ? `${property.minIncomeMultiplier}x rent` : "none"}
 
 Return ONLY valid JSON:
 {

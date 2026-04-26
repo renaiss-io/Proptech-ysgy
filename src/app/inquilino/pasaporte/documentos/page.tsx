@@ -2,6 +2,7 @@ import { verifySession } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { uploadDocuments } from "./actions";
+import { PasaporteStepper } from "@/components/PasaporteStepper";
 
 export default async function DocumentosPage() {
   const user = await verifySession();
@@ -10,9 +11,10 @@ export default async function DocumentosPage() {
 
   return (
     <div className="max-w-xl">
+      <PasaporteStepper current={2} />
       <div className="mb-6">
         <h1 className="text-xl font-semibold text-gray-900">Documentación</h1>
-        <p className="text-gray-500 text-sm mt-1">Paso 2 de 3 — Subí tu DNI y comprobante de ingresos</p>
+        <p className="text-gray-500 text-sm mt-1">Subí tu DNI y comprobante de ingresos para obtener tu score.</p>
       </div>
 
       <form action={uploadDocuments} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">

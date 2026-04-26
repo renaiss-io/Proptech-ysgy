@@ -1,9 +1,11 @@
 import { verifyRole } from "@/lib/dal";
+import { prisma } from "@/lib/prisma";
 import { NavLink } from "@/components/NavLink";
 import { signOut } from "@/auth";
 
-export default async function InquilinoLayout({ children }: { children: React.ReactNode }) {
-  const user = await verifyRole("INQUILINO");
+export default async function InmobiliariaLayout({ children }: { children: React.ReactNode }) {
+  const user = await verifyRole("INMOBILIARIA");
+  const profile = await prisma.inmobiliariaProfile.findUnique({ where: { userId: user.id } });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -11,13 +13,15 @@ export default async function InquilinoLayout({ children }: { children: React.Re
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <span className="font-bold text-gray-900">PropTech</span>
-            <NavLink href="/inquilino">Inicio</NavLink>
-            <NavLink href="/inquilino/pasaporte">Mi Pasaporte</NavLink>
-            <NavLink href="/inquilino/propiedades">Propiedades</NavLink>
-            <NavLink href="/inquilino/postulaciones">Mis Postulaciones</NavLink>
+            {profile && (
+              <>
+                <NavLink href="/inmobiliaria">Panel</NavLink>
+                <NavLink href="/inmobiliaria/propiedades">Propiedades</NavLink>
+              </>
+            )}
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-400 hidden sm:block">{user.email}</span>
+            <span className="text-sm text-gray-400 hidden sm:block">{profile?.companyName ?? user.email}</span>
             <form action={async () => { "use server"; await signOut({ redirectTo: "/login" }); }}>
               <button className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Salir</button>
             </form>

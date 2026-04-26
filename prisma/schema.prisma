@@ -158,7 +158,8 @@ model InmobiliariaProfile {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  properties Property[]
+  properties       Property[]
+  manualCandidates ManualCandidate[]
 }
 
 model Property {
@@ -178,10 +179,42 @@ model Property {
   status         PropertyStatus      @default(DISPONIBLE)
   description    String?
   images         String[]
+  externalLink   String?
+  // Compatibility spec
+  minVerazScore       Int?
+  acceptedGuarantees  GuaranteeType[]
+  petsAllowed         Boolean         @default(true)
+  smokersAllowed      Boolean         @default(false)
+  childrenAllowed     Boolean         @default(true)
+  minIncomeMultiplier Decimal?        @db.Decimal(4, 1)
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
 
-  postulaciones Postulacion[]
+  postulaciones    Postulacion[]
+  manualCandidates ManualCandidate[]
+}
+
+model ManualCandidate {
+  id                       String              @id @default(cuid())
+  propertyId               String
+  property                 Property            @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  inmobiliariaId           String
+  inmobiliaria             InmobiliariaProfile @relation(fields: [inmobiliariaId], references: [id], onDelete: Cascade)
+  firstName                String
+  lastName                 String
+  phone                    String?
+  email                    String?
+  monthlyIncome            Decimal             @db.Decimal(12, 2)
+  guaranteeType            GuaranteeType
+  profileType              ProfileType?
+  hasPets                  Boolean             @default(false)
+  isSmoker                 Boolean             @default(false)
+  familySize               Int?
+  notes                    String?
+  compatibilityPct         Int?
+  compatibilityExplanation String?
+  createdAt                DateTime            @default(now())
+  updatedAt                DateTime            @updatedAt
 }
 
 model Postulacion {

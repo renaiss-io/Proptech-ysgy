@@ -1,7 +1,8 @@
 import { groq, MODELS } from "./client";
 import fs from "fs";
 import path from "path";
-import pdf from "pdf-parse";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pdf = require("pdf-parse") as (buffer: Buffer) => Promise<{ text: string }>;
 
 export interface ConfidenceScoreResult {
   score: number;

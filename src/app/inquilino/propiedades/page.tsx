@@ -72,30 +72,30 @@ export default async function PropiedadesPage() {
       {sorted.length === 0 && (
         <p className="text-gray-500">No hay propiedades disponibles en este momento.</p>
       )}
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {sorted.map((prop) => (
           <Link key={prop.id} href={`/inquilino/propiedades/${prop.id}`} className="bg-white rounded-xl border border-gray-200 p-5 hover:border-blue-300 transition-colors block">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
                     {PROPERTY_TYPE_LABELS[prop.propertyType] ?? prop.propertyType}
                   </span>
                   {prop.neighborhood && <span className="text-xs text-gray-400">{prop.neighborhood}</span>}
                 </div>
-                <h2 className="font-medium text-gray-900">{prop.title}</h2>
-                <p className="text-sm text-gray-500 mt-0.5">{prop.address}</p>
-                <div className="flex items-center gap-3 mt-2 text-sm text-gray-500">
+                <h2 className="font-medium text-gray-900 truncate">{prop.title}</h2>
+                <p className="text-sm text-gray-500 mt-0.5 truncate">{prop.address}</p>
+                <div className="flex items-center gap-3 mt-2 text-sm text-gray-500 flex-wrap">
                   <span>{prop.bedrooms} amb.</span>
                   <span>{prop.area.toString()} m²</span>
-                  <span className="font-medium text-gray-900">ARS {Number(prop.price).toLocaleString("es-AR")}</span>
+                  <span className="font-semibold text-gray-900">ARS {Number(prop.price).toLocaleString("es-AR")}</span>
                 </div>
                 {prop.explanation && (
                   <p className="text-xs text-gray-500 mt-2 line-clamp-2">{prop.explanation}</p>
                 )}
               </div>
               {prop.compatibilityPct != null && (
-                <div className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold ${
+                <div className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-sm font-bold ${
                   prop.compatibilityPct >= 75 ? "bg-green-100 text-green-700" :
                   prop.compatibilityPct >= 50 ? "bg-yellow-100 text-yellow-700" :
                   "bg-red-100 text-red-700"
