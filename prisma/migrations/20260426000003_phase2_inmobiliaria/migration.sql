@@ -1,18 +1,9 @@
--- AlterEnum: remove POSTULACION/EVALUACION from TransactionStage
-BEGIN;
-CREATE TYPE "TransactionStage_new" AS ENUM ('DOCUMENTACION', 'CONTRATO', 'ACTIVO', 'FINALIZADO');
-ALTER TABLE "Transaction" ALTER COLUMN "stage" TYPE "TransactionStage_new" USING ("stage"::text::"TransactionStage_new");
-ALTER TABLE "TransactionDocument" ALTER COLUMN "stage" TYPE "TransactionStage_new" USING ("stage"::text::"TransactionStage_new");
-ALTER TABLE "TransactionNote" ALTER COLUMN "stage" TYPE "TransactionStage_new" USING ("fromStage"::text::"TransactionStage_new");
-ALTER TABLE "TransactionHistory" ALTER COLUMN "fromStage" TYPE "TransactionStage_new" USING ("fromStage"::text::"TransactionStage_new");
-ALTER TABLE "TransactionHistory" ALTER COLUMN "toStage" TYPE "TransactionStage_new" USING ("toStage"::text::"TransactionStage_new");
-ALTER TYPE "TransactionStage" RENAME TO "TransactionStage_old";
-ALTER TYPE "TransactionStage_new" RENAME TO "TransactionStage";
-DROP TYPE "TransactionStage_old";
-COMMIT;
-
--- AlterTable Postulacion: drop deprecated transactionStage column
+-- Drop deprecated column first (uses old TransactionStage enum with POSTULACION/EVALUACION)
 ALTER TABLE "Postulacion" DROP COLUMN IF EXISTS "transactionStage";
+
+-- Replace TransactionStage enum (remove POSTULACION/EVALUACION, keep operational stages)
+DROP TYPE IF EXISTS "TransactionStage";
+CREATE TYPE "TransactionStage" AS ENUM ('DOCUMENTACION', 'CONTRATO', 'ACTIVO', 'FINALIZADO');
 
 -- AlterTable Property: add compatibility spec columns
 ALTER TABLE "Property"
