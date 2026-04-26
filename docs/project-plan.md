@@ -40,7 +40,7 @@
 - [x] Document attachment per state + internal notes (inmobiliaria-only, not visible to client)
 - [x] Shared portal: tokenized link at /portal/[portalToken], no account needed
 - [ ] Email notifications on each milestone
-- [ ] **[UX]** UX/UI pass — transaction board: state machine stepper, document attachments, shared portal view
+- [x] **[UX]** UX/UI pass — transaction board: state machine stepper, document attachments, shared portal view
 
 ### Phase 4 — M4 Inteligencia Artificial
 - [x] AI confidence score (lib/ai/scoring.ts) — JSON: {score, dimensions, improvement_text}
