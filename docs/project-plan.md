@@ -3,21 +3,21 @@
 ## Phases
 
 ### Phase 0 — Foundation (blocks everything)
-- [ ] Prisma schema: User, TenantProfile, Agency, Property, Application, Transaction
-- [ ] Next.js 14 scaffold with TypeScript, Tailwind, App Router
-- [ ] NextAuth with OAuth (Google), role stored in token (INQUILINO | INMOBILIARIA | ADMIN)
+- [x] Prisma schema: User, InquilinoProfile, InmobiliariaProfile, Property, Postulacion, Transaction (+ TransactionDocument, TransactionNote, TransactionHistory)
+- [x] Next.js 16 scaffold with TypeScript, Tailwind, App Router
+- [x] NextAuth email/password, role stored in JWT (INQUILINO | INMOBILIARIA | ADMIN)
 - [ ] Middleware: unauthenticated → /login, role mismatch → role home
 - [ ] DAL (lib/dal.ts): verifySession() with React cache()
 - [ ] Seed script from Assets/Usuarios.xlsx (3 agencies, 20 tenants, 10 properties, 15 applications)
 - [ ] Docker Compose: app + postgres
-- [ ] .env.example
+- [x] .env.example
 
 ### Phase 1 — M1 Pasaporte Inquilino
-- [ ] Register/login via OAuth (Google)
+- [ ] Register/login (email/password)
 - [ ] Tenant profile form (DNI, tipo de perfil: relación de dependencia / monotributista / autónomo / jubilado, lifestyle: mascotas, fumador, composición familiar)
 - [ ] Document upload: DNI image + income PDF → Supabase Storage
 - [ ] Veraz mock: match DNI against seed data, return score 500–999
-- [ ] Guarantee declaration (hipotecaria / seguro de caución)
+- [ ] Guarantee declaration (propietario / fianza / seguro de caución / ninguna)
 - [ ] AI confidence score display (0–100)
 - [ ] Inquilino: view compatible property cards ranked by compatibility — show AI compatibility_pct + explanation on each card
 - [ ] Inquilino: postulate to a property (one-click apply, shares profile with inmobiliaria)
@@ -30,7 +30,7 @@
 - [ ] Candidate list ranked by score with filters: guarantee type + income/rent ratio — show AI compatibility_pct + explanation per candidate
 
 ### Phase 3 — M3 Tablero de Transacción
-- [ ] Transaction state machine (config/transaction.ts): Candidato seleccionado → Documentación completa → Contrato en revisión → Contrato firmado → Llaves entregadas
+- [ ] Transaction state machine (config/transaction.ts): DOCUMENTACION → CONTRATO → ACTIVO → FINALIZADO
 - [ ] Transaction board UI with state transitions
 - [ ] Document attachment per state + internal notes (inmobiliaria-only, not visible to client)
 - [ ] Shared portal: tokenized link sent to both inquilino and propietario, no account needed

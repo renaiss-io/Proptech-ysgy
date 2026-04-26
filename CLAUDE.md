@@ -12,13 +12,13 @@ Hackathon individual, ~16–20 hs. Brief completo: `docs/brief_plataforma_inmobi
 
 ## Stack (locked)
 
-- **Framework**: Next.js 14, TypeScript, App Router
+- **Framework**: Next.js 16, TypeScript, App Router
 - **Styles**: Tailwind CSS
 - **DB**: PostgreSQL via Prisma ORM — migrations versioned, no loose SQL scripts
 - **Storage**: Supabase Storage (DNIs, comprobantes de ingresos)
 - **AI**: Anthropic API — model `claude-sonnet-4-6`, native image + PDF support, no external OCR
 - **Deploy**: Vercel (app) + Supabase (DB + storage)
-- **Auth**: NextAuth.js — email/password, role-based
+- **Auth**: NextAuth.js v5 — Google OAuth. Role assigned post-signup via `/register/role`. ADMIN is seed-only.
 
 ## Architecture
 
@@ -30,8 +30,8 @@ Code in **English** (variables, functions, types). UI copy in **Spanish**.
 
 | Role | Key flows |
 |---|---|
-| Inquilino | Register → upload DNI + ingresos → Veraz mock → garantía → AI score → postulate → track |
-| Inmobiliaria | Register → properties → candidates ranked by score → transaction board → shared portal |
+| Inquilino | Sign in with Google → pick role → upload DNI + ingresos → Veraz mock → garantía → AI score → postulate → track |
+| Inmobiliaria | Sign in with Google → pick role → onboarding (company data) → properties → candidates ranked by score → transaction board → shared portal |
 | Admin | Approve agencies → platform metrics → flagged docs queue |
 
 ## Two scores — both visible
