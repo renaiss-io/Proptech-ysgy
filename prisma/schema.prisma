@@ -50,6 +50,13 @@ enum TransactionStage {
   FINALIZADO
 }
 
+enum ProfileType {
+  RELACION_DEPENDENCIA
+  MONOTRIBUTISTA
+  AUTONOMO
+  JUBILADO
+}
+
 enum DocumentType {
   DNI
   INCOME
@@ -124,6 +131,10 @@ model InquilinoProfile {
   phone         String?
   monthlyIncome Decimal       @db.Decimal(12, 2)
   guaranteeType GuaranteeType
+  profileType   ProfileType?
+  hasPets       Boolean       @default(false)
+  isSmoker      Boolean       @default(false)
+  familySize    Int?
   dniImagePath  String?
   incomeDocPath String?
   createdAt     DateTime      @default(now())
