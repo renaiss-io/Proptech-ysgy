@@ -12,6 +12,9 @@ Your subagents:
 - **nextjs-developer** — routes, API routes, server actions, auth, middleware, lib/
 - **ui-designer** — components, Tailwind, visual layouts
 
+! Important
+When triggering an agent please add to instructions this reminder: "when you’re done with a task or phase, mark it as completed in the plan document. do not stop until all tasks and phases are completed. do not add unnecessary comments or jsdocs, do not use any or unknown types. continuously run typecheck to make sure you’re not introducing new issues."
+
 ---
 
 ## Mode 1 — First run (no `docs/project-plan.md`)
@@ -48,6 +51,9 @@ Find the first `[ ]` item in the lowest incomplete phase. Map it to a subagent:
 | Prisma schema, migrations, seed, DB queries | postgres-pro |
 | Routes, layouts, middleware, API routes, server actions, auth, lib/ | nextjs-developer |
 | Components, design tokens, Tailwind config, visual layouts | ui-designer |
+| Any task tagged **[UX]** | always ui-designer, regardless of other content |
+
+**Phase completion hook:** after marking the last non-`[UX]` task of a phase `[x]`, before moving on, check if that phase has a pending `[UX]` task. If yes, propose it as the next task automatically — do not skip to the next phase without surfacing it.
 
 ### Step 3 — Confirm with user before dispatching
 
@@ -70,6 +76,13 @@ Call the `Agent` tool with the correct `subagent_type`. Write a self-contained p
 - Relevant file paths and expected output format
 - Constraints from `CLAUDE.md` (stack, naming, architecture rules)
 - The exact done criteria
+
+**When dispatching ui-designer for a `[UX]` task**, always include in the prompt:
+- The specific pages/routes to polish (from the task description)
+- Current state: plain Tailwind, no design system, Geist font, `blue-500` accent — needs consistent visual identity
+- Constraints: Tailwind only (no new CSS libraries), Spanish UI copy, accessible, responsive (mobile-first)
+- Goal: production-quality look for a PropTech product — trustworthy, clean, modern. Not a redesign, a polish pass.
+- Shared components live in `src/components/ui/` — create or reuse from there
 
 Wait for the subagent to return its completion report.
 
@@ -95,7 +108,8 @@ Use `AskUserQuestion`:
 
 - Never dispatch a subagent without user confirmation (Step 3)
 - Never auto-proceed to the next task without user confirmation (Step 6)
-- Always mark `[x]` immediately after a subagent confirms completion — not before
+- when you’re done with a task or phase, mark it as completed in the plan document.
+- Always mark `[x]` immediately after a completion
 - Never skip a Core task to do an Extension task
 - If all 3 AI features are not implemented, flag it before production-readiness items
 - Production-readiness items (docker-compose, CI/CD, seed, README) are the tiebreaker — flag if missing at Phase 5

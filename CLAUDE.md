@@ -16,13 +16,13 @@ Hackathon individual, ~16–20 hs. Brief completo: `docs/brief_plataforma_inmobi
 - **Styles**: Tailwind CSS
 - **DB**: PostgreSQL via Prisma ORM — migrations versioned, no loose SQL scripts
 - **Storage**: Supabase Storage (DNIs, comprobantes de ingresos)
-- **AI**: Anthropic API — model `claude-sonnet-4-6`, native image + PDF support, no external OCR
+- **AI**: Groq API — `llama-3.3-70b-versatile` for text, `llama-3.2-11b-vision-preview` for DNI image analysis, `pdf-parse` for PDF text extraction. Swap models later without touching logic.
 - **Deploy**: Vercel (app) + Supabase (DB + storage)
 - **Auth**: NextAuth.js v5 — Google OAuth. Role assigned post-signup via `/register/role`. ADMIN is seed-only.
 
 ## Architecture
 
-AI logic lives in `lib/ai/` as a service layer. Never call Anthropic directly from API routes.  
+AI logic lives in `lib/ai/` as a service layer. Never call Groq directly from API routes.  
 Route structure: `/inquilino`, `/inmobiliaria`, `/admin` — three isolated role trees.  
 Code in **English** (variables, functions, types). UI copy in **Spanish**.
 
@@ -45,7 +45,7 @@ Veraz ranges: 850–999 Excelente · 700–849 Bueno · 500–699 Regular · <50
 
 ## AI features (all three required for full score)
 
-1. **Score Confianza** — analyze uploaded docs (DNI image + income PDF via Claude natively), return `{ score, dimensions, improvement_text }` as JSON.
+1. **Score Confianza** — analyze uploaded docs (DNI image via vision model, income PDF via pdf-parse → text), return `{ score, dimensions, improvement_text }` as JSON.
 2. **Compatibilidad perfil–propiedad** — return `{ compatibility_pct, explanation }` (2–3 sentences in Spanish). Shown to both inquilino and inmobiliaria.
 3. **Resumen comparativo de candidatos** — given 3–5 top applicants, return a comparative paragraph in Spanish highlighting strengths and key differences.
 
