@@ -3,6 +3,25 @@ import { PrismaClient, GuaranteeType, PropertyType, PropertyStatus, PostulacionS
 import { PrismaPg } from "@prisma/adapter-pg";
 import * as XLSX from "xlsx";
 import path from "path";
+import fs from "fs";
+import { createClient } from "@supabase/supabase-js";
+
+const BUCKET = "documents";
+
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
+
+async function uploadAsset(localPath: string, storageKey: string, contentType: string): Promise<string | null> {
+  if (!fs.existsSync(localPath)) return null;
+  const buffer = fs.readFileSync(localPath);
+  const { error } = await getSupabase().storage.from(BUCKET).upload(storageKey, buffer, { upsert: true, contentType });
+  if (error) { console.warn(`  ⚠ upload failed ${storageKey}: ${error.message}`); return null; }
+  return storageKey;
+}
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
@@ -114,8 +133,6 @@ async function main() {
               dni: String(row.dni),
               monthlyIncome: monthlyIncome(row.score_veraz),
               guaranteeType: guaranteeType(row.garantia_hipotecaria, row["ofrece_caución"]),
-              dniImagePath: dniImageDNIs.has(row.dni) ? `Assets/DNIs/dni_${row.dni}.jpg` : null,
-              incomeDocPath: incomePDFDNIs.has(row.dni) ? `Assets/Comprobante_Ingresos/dni_${row.dni}.pdf` : null,
             },
           },
         },
@@ -125,6 +142,33 @@ async function main() {
   );
 
   const inquilinoProfiles = inquilinos.map((i) => i.inquilinoProfile!);
+
+  // ── Upload assets to Supabase Storage ────────────────────────────────────
+  await Promise.all(
+    rows.map(async (row, i) => {
+      const profile = inquilinoProfiles[i];
+      const updates: { dniImagePath?: string; incomeDocPath?: string } = {};
+
+      if (dniImageDNIs.has(row.dni)) {
+        const jpegPath = path.join(process.cwd(), `Assets/DNIs/dni_${row.dni}.jpeg`);
+        const jpgPath = path.join(process.cwd(), `Assets/DNIs/dni_${row.dni}.jpg`);
+        const localPath = fs.existsSync(jpegPath) ? jpegPath : jpgPath;
+        const ext = path.extname(localPath).slice(1);
+        const key = await uploadAsset(localPath, `dni/${profile.id}.${ext}`, "image/jpeg");
+        if (key) updates.dniImagePath = key;
+      }
+
+      if (incomePDFDNIs.has(row.dni)) {
+        const localPath = path.join(process.cwd(), `Assets/Comprobante_Ingresos/dni_${row.dni}.pdf`);
+        const key = await uploadAsset(localPath, `income/${profile.id}.pdf`, "application/pdf");
+        if (key) updates.incomeDocPath = key;
+      }
+
+      if (Object.keys(updates).length > 0) {
+        await prisma.inquilinoProfile.update({ where: { id: profile.id }, data: updates });
+      }
+    })
+  );
 
   // ── Veraz scores ─────────────────────────────────────────────────────────
   await Promise.all(
