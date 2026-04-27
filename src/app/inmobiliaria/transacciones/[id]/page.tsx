@@ -103,11 +103,11 @@ export default async function TransactionDetailPage({ params }: { params: Promis
                         ? "bg-gray-800 border-gray-800 text-white"
                         : active
                         ? `${cfg.bgColor} ${cfg.color} ${cfg.borderColor} shadow-sm`
-                        : "bg-white border-gray-200 text-gray-300"
+                        : "bg-white border-gray-200 text-gray-400"
                     }`}>
                       {done ? "✓" : i + 1}
                     </div>
-                    <span className={`text-xs font-medium text-center leading-tight ${active ? cfg.color : done ? "text-gray-500" : "text-gray-300"}`}>
+                    <span className={`text-xs font-medium text-center leading-tight ${active ? cfg.color : done ? "text-gray-600" : "text-gray-400"}`}>
                       {cfg.label}
                     </span>
                   </div>
