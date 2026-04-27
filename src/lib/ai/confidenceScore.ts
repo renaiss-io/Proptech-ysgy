@@ -1,6 +1,21 @@
 import { groq, MODELS } from "./client";
-import fs from "fs";
 import path from "path";
+import { createClient } from "@supabase/supabase-js";
+
+const BUCKET = "documents";
+
+function getStorage() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  ).storage.from(BUCKET);
+}
+
+async function downloadBuffer(storageKey: string): Promise<Buffer | null> {
+  const { data, error } = await getStorage().download(storageKey);
+  if (error || !data) return null;
+  return Buffer.from(await data.arrayBuffer());
+}
 
 export interface ConfidenceScoreResult {
   score: number;
@@ -21,18 +36,21 @@ interface ProfileData {
   incomeDocPath: string | null;
 }
 
-async function extractPdfText(filePath: string): Promise<string> {
+async function extractPdfText(storageKey: string): Promise<string> {
+  const buffer = await downloadBuffer(storageKey);
+  if (!buffer) return "No income document provided.";
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const pdf = require("pdf-parse") as (buffer: Buffer) => Promise<{ text: string }>;
-  const buffer = fs.readFileSync(filePath);
   const data = await pdf(buffer);
   return data.text.slice(0, 3000);
 }
 
-async function analyzeDniImage(imagePath: string): Promise<string> {
-  const ext = path.extname(imagePath).toLowerCase();
+async function analyzeDniImage(storageKey: string): Promise<string> {
+  const buffer = await downloadBuffer(storageKey);
+  if (!buffer) return "No DNI image provided.";
+  const ext = path.extname(storageKey).toLowerCase();
   const mimeType = ext === ".png" ? "image/png" : "image/jpeg";
-  const imageData = fs.readFileSync(imagePath).toString("base64");
+  const imageData = buffer.toString("base64");
 
   const response = await groq.chat.completions.create({
     model: MODELS.vision,
@@ -66,11 +84,11 @@ export async function computeConfidenceScore(
   let dniAnalysis = "No DNI image provided.";
   let incomeText = "No income document provided.";
 
-  if (profile.dniImagePath && fs.existsSync(profile.dniImagePath)) {
+  if (profile.dniImagePath) {
     dniAnalysis = await analyzeDniImage(profile.dniImagePath);
   }
 
-  if (profile.incomeDocPath && fs.existsSync(profile.incomeDocPath)) {
+  if (profile.incomeDocPath) {
     incomeText = await extractPdfText(profile.incomeDocPath);
   }
 
