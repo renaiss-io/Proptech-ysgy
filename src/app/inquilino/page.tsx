@@ -42,7 +42,7 @@ export default async function InquilinoHome() {
           {steps.map((step) => (
             <li key={step.label} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium ${step.done ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-400"}`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium ${step.done ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
                   {step.done ? "✓" : "·"}
                 </span>
                 <span className="text-sm text-gray-700">{step.label}</span>

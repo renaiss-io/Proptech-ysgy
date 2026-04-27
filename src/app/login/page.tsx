@@ -73,7 +73,7 @@ export default function LoginPage() {
           )}
         </div>
 
-        <p className="text-xs text-gray-400 text-center mt-6">
+        <p className="text-xs text-gray-600 text-center mt-6">
           Al continuar aceptás los términos de uso de la plataforma.
         </p>
       </div>
