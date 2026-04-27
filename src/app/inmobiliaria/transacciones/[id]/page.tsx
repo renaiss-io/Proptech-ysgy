@@ -1,6 +1,7 @@
 import { verifyRole } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { TRANSACTION_STAGES, STAGE_ORDER } from "@/config/transaction";
 import { SubmitButton } from "@/components/SubmitButton";
@@ -53,8 +54,10 @@ export default async function TransactionDetailPage({ params }: { params: Promis
   const nextStage = stageConfig.next;
   const nextLabel = nextStage ? TRANSACTION_STAGES[nextStage].label : null;
   const currentStageIndex = STAGE_ORDER.indexOf(tx.stage);
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
-  const portalUrl = `${baseUrl}/portal/${tx.portalToken}`;
+  const hdrs = await headers();
+  const host = hdrs.get("host") ?? "";
+  const proto = hdrs.get("x-forwarded-proto") ?? "https";
+  const portalUrl = `${proto}://${host}/portal/${tx.portalToken}`;
 
   const { inquilino, property } = tx.postulacion;
 
